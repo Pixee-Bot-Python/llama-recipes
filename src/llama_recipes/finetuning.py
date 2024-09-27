@@ -6,7 +6,6 @@ import os
 
 import dataclasses
 import fire
-import random
 import torch
 import torch.optim as optim
 from peft import get_peft_model, PeftModel
@@ -55,6 +54,7 @@ from llama_recipes.utils.train_utils import (
 )
 from accelerate.utils import is_xpu_available
 from warnings import warn
+import secrets
 
 def setup_wandb(train_config, fsdp_config, **kwargs):
     try:
@@ -81,7 +81,7 @@ def main(**kwargs):
     if is_xpu_available():
         torch.xpu.manual_seed(train_config.seed)
     torch.manual_seed(train_config.seed)
-    random.seed(train_config.seed)
+    secrets.SystemRandom().seed(train_config.seed)
 
     if train_config.enable_fsdp:
         setup()
