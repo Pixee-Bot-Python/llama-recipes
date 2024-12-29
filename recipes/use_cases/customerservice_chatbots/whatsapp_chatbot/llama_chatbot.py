@@ -33,7 +33,7 @@ class WhatsAppClient:
                 "body": message
             }
         }
-        response = requests.post(f"{self.API_URL}/messages", json=payload,headers=self.headers)
+        response = requests.post(f"{self.API_URL}/messages", json=payload,headers=self.headers, timeout=60)
         print(response.status_code)
         assert response.status_code == 200, "Error sending message"
         return response.status_code

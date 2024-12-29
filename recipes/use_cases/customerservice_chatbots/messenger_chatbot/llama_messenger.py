@@ -40,7 +40,7 @@ def msgrcvd_pager():
     headers = {
         'Content-Type': 'application/json'
     }
-    response = requests.post(url, params=params, headers=headers)
+    response = requests.post(url, params=params, headers=headers, timeout=60)
     print(response.status_code)
     print(response.text)
 
