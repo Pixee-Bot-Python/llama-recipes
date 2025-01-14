@@ -5,11 +5,11 @@ import os
 import logging
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from datasets import Dataset
-import random
 from langchain_community.document_loaders import SitemapLoader,DirectoryLoader
 from bs4 import BeautifulSoup
 from langchain_openai import ChatOpenAI
 import copy
+import secrets
 
 
 # Initialize logging
@@ -199,10 +199,10 @@ def add_chunk_to_dataset(
         docs = [chunk]
         indices = list(range(0, len(chunks)))
         indices.remove(i)
-        for j in random.sample(indices, num_distract):
+        for j in secrets.SystemRandom().sample(indices, num_distract):
             docs.append(chunks[j])
         doc_copy = docs.copy()
-        random.shuffle(docs)
+        secrets.SystemRandom().shuffle(docs)
         d = {
             "title": [],
             "sentences": []
@@ -224,10 +224,10 @@ def add_chunk_to_dataset(
         # add to dataset
         data_list.append(datapt)
         # decides whether to add refusal example where the related documents are not provided
-        refusal = random.uniform(0, 1) <= p
+        refusal = secrets.SystemRandom().uniform(0, 1) <= p
         if refusal:
-            doc_copy[0] = chunks[random.sample(indices, 1)[0]]
-            random.shuffle(doc_copy)
+            doc_copy[0] = chunks[secrets.SystemRandom().sample(indices, 1)[0]]
+            secrets.SystemRandom().shuffle(doc_copy)
             refusl_context = ""
             for doc in doc_copy:
                 refusl_context += "<DOCUMENT>" + str(doc) + "</DOCUMENT>\n"

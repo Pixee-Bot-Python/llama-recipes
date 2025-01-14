@@ -1,27 +1,27 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
 
-import random
 import pytest
 
 import torch
 
 from llama_recipes.data.sampler import LengthBasedBatchSampler
 from llama_recipes.data.sampler import DistributedLengthBasedBatchSampler
+import secrets
 
 SAMPLES = 33
 
 @pytest.fixture
 def dataset():
-    random.seed(42)
+    secrets.SystemRandom().seed(42)
     dataset = []
     def add_samples(ds, n, a, b):
         for _ in range(n):
-            ds.append(random.randint(a,b) * [1,])
+            ds.append(secrets.SystemRandom().randint(a,b) * [1,])
     add_samples(dataset, SAMPLES // 2, 1,9)
     add_samples(dataset, (SAMPLES // 2) + (SAMPLES % 2), 10,20)
     
-    return random.sample(dataset, len(dataset))
+    return secrets.SystemRandom().sample(dataset, len(dataset))
     
     
 @pytest.mark.parametrize("batch_size, drop_last", [(2, False), (8, False), (2, True), (8, True)])
