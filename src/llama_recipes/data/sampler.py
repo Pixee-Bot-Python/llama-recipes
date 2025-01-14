@@ -1,11 +1,11 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
 
-import random
 from itertools import islice
 
 import numpy as np
 import torch
+import secrets
 
 
 class LengthBasedBatchSampler(torch.utils.data.BatchSampler):
@@ -27,7 +27,7 @@ class LengthBasedBatchSampler(torch.utils.data.BatchSampler):
         batches = [ids[i:i+self.batch_size] for i in range(0, len(ids), self.batch_size)]
 
         if self.shuffle:
-            random.shuffle(batches)
+            secrets.SystemRandom().shuffle(batches)
 
         for b in batches:
             yield b
@@ -41,7 +41,7 @@ class LengthBasedBatchSampler(torch.utils.data.BatchSampler):
 
 class DistributedLengthBasedBatchSampler(torch.utils.data.BatchSampler):
     def __init__(self, data_source, batch_size: int, num_replicas: int, rank: int, shuffle: bool = True, seed: int = 0) -> None:
-        random.seed(seed)
+        secrets.SystemRandom().seed(seed)
         self.batch_sampler = LengthBasedBatchSampler(
             data_source, batch_size=batch_size, drop_last=True, shuffle=shuffle
             )

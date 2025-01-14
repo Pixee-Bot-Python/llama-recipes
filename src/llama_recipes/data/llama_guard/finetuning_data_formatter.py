@@ -2,10 +2,10 @@
 # This software may be used and distributed according to the terms of the Llama Guard License Agreement.
 
 import copy
-import random
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Literal, Optional, Sequence
+import secrets
 
 
 @dataclass
@@ -95,7 +95,7 @@ def create_formatted_finetuning_examples(
     """
     _verify_formatter_configs(formatter_configs)
 
-    random.seed(formatter_configs.random_seed)
+    secrets.SystemRandom().seed(formatter_configs.random_seed)
 
     indices_of_all_categories = range(len(formatter_configs.guidelines.categories))
 
@@ -145,7 +145,7 @@ def _create_formatted_finetuning_example(
     category_indices_to_include_in_llama_guard_prompt: List[int],
 ) -> str:
     if formatter_configs.llama_guard_prompt_configs.should_shuffle_category_codes:
-        random.shuffle(category_indices_to_include_in_llama_guard_prompt)
+        secrets.SystemRandom().shuffle(category_indices_to_include_in_llama_guard_prompt)
     else:
         category_indices_to_include_in_llama_guard_prompt = sorted(
             category_indices_to_include_in_llama_guard_prompt
@@ -344,13 +344,12 @@ def _maybe_add_example_with_dropped_nonviolated_prompt_categories(
     ):
         return
 
-    number_of_categories_to_drop = random.randint(0, len(nonviolated_category_indices))
+    number_of_categories_to_drop = secrets.SystemRandom().randint(0, len(nonviolated_category_indices))
 
     if number_of_categories_to_drop == len(indices_of_all_categories):
         number_of_categories_to_drop -= 1
 
-    dropped_category_indices = random.sample(
-        nonviolated_category_indices, number_of_categories_to_drop
+    dropped_category_indices = secrets.SystemRandom().sample(nonviolated_category_indices, number_of_categories_to_drop
     )
 
     retained_category_indices = list(
@@ -384,9 +383,8 @@ def _maybe_add_example_with_dropped_violated_and_nonviolated_prompt_categories(
     ):
         return
 
-    random_nonviolated_category_indices_to_drop = random.sample(
-        nonviolated_category_indices,
-        random.randint(0, len(nonviolated_category_indices) - 1),
+    random_nonviolated_category_indices_to_drop = secrets.SystemRandom().sample(nonviolated_category_indices,
+        secrets.SystemRandom().randint(0, len(nonviolated_category_indices) - 1),
     )
 
     set_of_retained_category_indices = (
