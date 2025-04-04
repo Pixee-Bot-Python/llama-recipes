@@ -140,7 +140,7 @@ def generate_text() -> Tuple[int, int]:
         endpoint_id = executor_id
     lock.release()
 
-    response = requests.post(MODEL_ENDPOINTS[endpoint_id], headers=headers, json=payload)
+    response = requests.post(MODEL_ENDPOINTS[endpoint_id], headers=headers, json=payload, timeout=60)
 
     if(SAFE_CHECK):
         # Function to send prompts for safety check. Add delays for request round-trip that count towards overall throughput measurement.
