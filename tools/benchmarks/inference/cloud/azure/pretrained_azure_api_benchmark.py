@@ -4,12 +4,12 @@
 import csv
 import json
 import time
-import random
 import urllib.request
 import numpy as np
 import transformers
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, Tuple, List
+import secrets
 
 # Predefined inputs - optional
 with open('input.jsonl') as input:
@@ -42,7 +42,7 @@ def generate_random_prompt(num_tokens):
     generated_tokens_count = 0
     selected_tokens = ""
     while generated_tokens_count < num_tokens:
-        selected_tokens += random.choice(vocab)
+        selected_tokens += secrets.choice(vocab)
         selected_tokens += " "
         generated_tokens_count = len(tokenizer.encode(selected_tokens))
 
